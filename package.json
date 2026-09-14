@@ -1,0 +1,27 @@
+{
+	"name": "mmm-vesseltracker",
+	"version": "1.0.0",
+	"description": "MagicMirror² module that tracks a single vessel via AIS (aisstream.io) and shows its position, a small map, the body of water and the nearest cities.",
+	"main": "MMM-VesselTracker.js",
+	"author": "Beh",
+	"license": "MIT",
+	"keywords": [
+		"MagicMirror",
+		"AIS",
+		"vessel",
+		"ship",
+		"tracking"
+	],
+	"engines": {
+		"node": ">=22.21.1"
+	},
+	"scripts": {
+		"test": "node --test \"test/**/*.test.js\"",
+		"build:cities": "node scripts/build-cities.js",
+		"live-test": "node --env-file=.env scripts/live-test.js"
+	},
+	"dependencies": {
+		"leaflet": "^1.9.4",
+		"ws": "^8.21.3"
+	}
+}

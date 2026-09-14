@@ -1,0 +1,71 @@
+.vesseltracker {
+	text-align: left;
+}
+
+.vesseltracker .vt-notice {
+	display: flex;
+	gap: 0.6em;
+	align-items: flex-start;
+	max-width: 22em;
+	margin-bottom: 0.6em;
+}
+
+.vesseltracker .vt-notice > i {
+	margin-top: 0.2em;
+	font-size: 1.2em;
+	color: #7fb3d5;
+}
+
+.vesseltracker .vt-notice.vt-error > i {
+	color: #e5a54b;
+}
+
+.vesseltracker .vt-notice-text {
+	line-height: 1.35;
+	color: #999;
+}
+
+.vesseltracker .vt-coordinates {
+	display: flex;
+	flex-wrap: wrap;
+	column-gap: 0.8em;
+	font-variant-numeric: tabular-nums;
+}
+
+.vesseltracker .vt-stale .vt-coordinates {
+	color: #aaa;
+}
+
+.vesseltracker .vt-meta {
+	margin-bottom: 0.3em;
+}
+
+.vesseltracker .vt-line {
+	line-height: 1.5;
+}
+
+.vesseltracker .vt-line > i {
+	width: 1.3em;
+	margin-right: 0.3em;
+	text-align: center;
+	color: #666;
+}
+
+.vesseltracker .vt-map {
+	margin-top: 0.6em;
+	border-radius: 6px;
+	overflow: hidden;
+	background: #111;
+}
+
+.vesseltracker .vt-map .leaflet-control-attribution {
+	padding: 0 4px;
+	background: rgb(0 0 0 / 50%);
+	color: #555;
+	font-size: 9px;
+	line-height: 1.4;
+}
+
+.vesseltracker .vt-map .leaflet-control-attribution a {
+	color: #666;
+}
