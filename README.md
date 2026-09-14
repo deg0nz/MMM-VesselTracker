@@ -140,6 +140,10 @@ npm run build:cities             # refresh data/cities.json from GeoNames (needs
 npm run live-test -- [mmsi] [s]  # end-to-end check against aisstream.io, needs AISSTREAM_API_KEY in .env
 ```
 
+## AI Disclaimer
+
+This project is heavily written by an LLM. In fact, almost all of the code is written by an LLM. If you don't like this, feel free _not_ to use this module.
+
 ## License
 
 [MIT](LICENSE)
