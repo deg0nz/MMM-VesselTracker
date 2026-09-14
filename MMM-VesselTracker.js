@@ -17,7 +17,8 @@ Module.register("MMM-VesselTracker", {
 		mapWidth: 300,
 		mapHeight: 200,
 		mapZoom: 6,
-		mapTileUrl: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+		mapApiKey: "",
+		mapTileUrl: "https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key={key}",
 		mapAttribution: "© OpenStreetMap © CARTO"
 	},
 
@@ -197,7 +198,8 @@ Module.register("MMM-VesselTracker", {
 				zoomAnimation: false
 			}).setView(latLng, this.config.mapZoom);
 			this.map.attributionControl.setPrefix(false);
-			L.tileLayer(this.config.mapTileUrl, { attribution: this.config.mapAttribution, subdomains: "abcd", maxZoom: 19 }).addTo(this.map);
+			// Leaflet fills "{key}" in mapTileUrl from the "key" option.
+			L.tileLayer(this.config.mapTileUrl, { attribution: this.config.mapAttribution, key: String(this.config.mapApiKey ?? "").trim(), subdomains: "abcd", maxZoom: 19 }).addTo(this.map);
 			this.marker = L.circleMarker(latLng, { radius: 6, weight: 2 }).addTo(this.map);
 		}
 

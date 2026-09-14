@@ -14,6 +14,7 @@ Position data comes from [aisstream.io](https://aisstream.io), which is free.
 
 - MagicMirror² **v2.37.0 or newer**
 - A free aisstream.io API key
+- A free CARTO basemaps API key for the map
 
 ## Installation
 
@@ -31,6 +32,15 @@ npm install --omit=dev
 
 aisstream.io allows 3 connections per key. The module uses a single connection for all module instances, so you can track several vessels with one key.
 
+### Map key
+
+The map uses CARTO's Dark Matter tiles. Without a key, CARTO covers every tile with an "API KEY REQUIRED" watermark.
+
+1. Request a key at [carto.com/basemaps/apikey](https://carto.com/basemaps/apikey). You don't need a CARTO account (their 14-day trial is for the CARTO platform, not the basemaps).
+2. Set it as `mapApiKey`.
+
+The free key covers 5 million tile requests per month, far more than a mirror needs.
+
 ## Finding a vessel's MMSI
 
 Each module instance tracks one vessel by its 9-digit **MMSI**. Look the vessel up on [VesselFinder](https://www.vesselfinder.com) or [MarineTraffic](https://www.marinetraffic.com) and copy the MMSI from the vessel details.
@@ -41,6 +51,7 @@ Keep the API key out of `config.js` by using MagicMirror's secrets support. Put 
 
 ```sh
 SECRET_AISSTREAM_API_KEY=your-key-here
+SECRET_CARTO_API_KEY=your-key-here
 ```
 
 Then reference it in `config/config.js`:
@@ -56,12 +67,15 @@ let config = {
 			header: "{name}",
 			config: {
 				mmsi: 211210000,
-				apiKey: "${SECRET_AISSTREAM_API_KEY}"
+				apiKey: "${SECRET_AISSTREAM_API_KEY}",
+				mapApiKey: "${SECRET_CARTO_API_KEY}"
 			}
 		}
 	]
 };
 ```
+
+Put `mapApiKey` into `config.js` directly, not as a secret. The browser loads the map tiles, so it needs the real key, and the key is visible in every tile URL anyway.
 
 Secrets don't work with `cors: "allowAll"`. Leave `cors` at its default (`"disabled"`) or use `"allowWhitelist"`.
 
@@ -98,7 +112,8 @@ Example: `header: "Frigate {name}"`.
 | `showMap` | `true` | Show the map. |
 | `mapWidth` / `mapHeight` | `300` / `200` | Map size in pixels. |
 | `mapZoom` | `6` | Map zoom level. |
-| `mapTileUrl` | CARTO Dark Matter | Leaflet tile URL template. |
+| `mapApiKey` | `""` | CARTO basemaps API key (see [Map key](#map-key)). |
+| `mapTileUrl` | CARTO Dark Matter | Leaflet tile URL template. `{key}` is replaced with `mapApiKey`. |
 | `mapAttribution` | `"© OpenStreetMap © CARTO"` | Attribution shown on the map. |
 
 ## How "tracking not available" works
