@@ -59,6 +59,7 @@ Module.register("MMM-VesselTracker", {
 				identifier: this.identifier,
 				mmsi: this.config.mmsi,
 				apiKey: this.config.apiKey,
+				mapApiKey: this.config.mapApiKey,
 				showWaterBody: this.config.showWaterBody,
 				showNearestCities: this.config.showNearestCities,
 				citiesCount: this.config.citiesCount,
@@ -82,6 +83,8 @@ Module.register("MMM-VesselTracker", {
 		this.vessel = payload.vessel;
 		this.cities = payload.cities ?? [];
 		this.error = payload.error;
+		// With hideConfigSecrets the browser only knows the placeholder; the helper sends the real key.
+		this.mapApiKey = payload.mapApiKey ?? "";
 		// No fade: an animated update finishing after a newer one would put stale content back.
 		this.updateDom();
 	},
@@ -199,7 +202,7 @@ Module.register("MMM-VesselTracker", {
 			}).setView(latLng, this.config.mapZoom);
 			this.map.attributionControl.setPrefix(false);
 			// Leaflet fills "{key}" in mapTileUrl from the "key" option.
-			L.tileLayer(this.config.mapTileUrl, { attribution: this.config.mapAttribution, key: String(this.config.mapApiKey ?? "").trim(), subdomains: "abcd", maxZoom: 19 }).addTo(this.map);
+			L.tileLayer(this.config.mapTileUrl, { attribution: this.config.mapAttribution, key: this.mapApiKey, subdomains: "abcd", maxZoom: 19 }).addTo(this.map);
 			this.marker = L.circleMarker(latLng, { radius: 6, weight: 2 }).addTo(this.map);
 		}
 

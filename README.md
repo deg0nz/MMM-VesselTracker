@@ -37,7 +37,7 @@ aisstream.io allows 3 connections per key. The module uses a single connection f
 The map uses CARTO's Dark Matter tiles. Without a key, CARTO covers every tile with an "API KEY REQUIRED" watermark.
 
 1. Request a key at [carto.com/basemaps/apikey](https://carto.com/basemaps/apikey). You don't need a CARTO account (their 14-day trial is for the CARTO platform, not the basemaps).
-2. Set it as `mapApiKey`.
+2. Add it to `config/config.env` as `SECRET_CARTO_API_KEY` (see [Configuration](#configuration)).
 
 The free key covers 5 million tile requests per month, far more than a mirror needs.
 
@@ -47,14 +47,14 @@ Each module instance tracks one vessel by its 9-digit **MMSI**. Look the vessel 
 
 ## Configuration
 
-Keep the API key out of `config.js` by using MagicMirror's secrets support. Put the key into `config/config.env`:
+Keep the API keys out of `config.js` by using MagicMirror's secrets support. Put the keys into `config/config.env`:
 
 ```sh
 SECRET_AISSTREAM_API_KEY=your-key-here
 SECRET_CARTO_API_KEY=your-key-here
 ```
 
-Then reference it in `config/config.js`:
+Then reference them in `config/config.js`:
 
 ```js
 let config = {
@@ -75,11 +75,11 @@ let config = {
 };
 ```
 
-Put `mapApiKey` into `config.js` directly, not as a secret. The browser loads the map tiles, so it needs the real key, and the key is visible in every tile URL anyway.
+The browser loads the map tiles, so the node helper hands the CARTO key back to it and the key shows up in the tile URLs. CARTO basemap keys are meant for use in browsers, so that's expected. The aisstream.io key never leaves the server.
 
 Secrets don't work with `cors: "allowAll"`. Leave `cors` at its default (`"disabled"`) or use `"allowWhitelist"`.
 
-If you add several MMM-VesselTracker instances, use the same secret in all of them. MagicMirror only restores secrets that appear in the first instance's config.
+If you add several MMM-VesselTracker instances, use the same secrets in all of them. MagicMirror only restores secrets that appear in the first instance's config.
 
 Instead of `apiKey`, you can also set the environment variable `AISSTREAM_API_KEY` for the MagicMirror process.
 

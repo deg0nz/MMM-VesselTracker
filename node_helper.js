@@ -24,6 +24,17 @@ function resolveApiKey (configured) {
 	return key;
 }
 
+/**
+ * @param {unknown} configured mapApiKey from the module config (may be a resolved **SECRET_…** placeholder).
+ * @returns {string} CARTO key, or "" if none is usable.
+ */
+function resolveMapApiKey (configured) {
+	const key = typeof configured === "string" ? configured.trim() : "";
+	if (!key.includes("**SECRET_")) return key;
+	Log.warn(`${key} is not set in config/config.env, map tiles will show a watermark`);
+	return "";
+}
+
 module.exports = NodeHelper.create({
 	start () {
 		Log.log("Starting node helper");
@@ -76,14 +87,15 @@ module.exports = NodeHelper.create({
 			showWaterBody: payload.showWaterBody !== false,
 			showNearestCities: payload.showNearestCities !== false,
 			citiesCount: Number(payload.citiesCount) || 2,
-			minCityPopulation: Number(payload.minCityPopulation) || 0
+			minCityPopulation: Number(payload.minCityPopulation) || 0,
+			mapApiKey: resolveMapApiKey(payload.mapApiKey)
 		});
 		if (!this.vessels.has(mmsi)) this.vessels.set(mmsi, createVessel(mmsi));
 
 		const apiKey = resolveApiKey(payload.apiKey) ?? this.apiKey;
 		if (!apiKey) {
 			Log.error("No aisstream.io API key configured");
-			this.sendSocketNotification("VESSELTRACKER_UPDATE", { identifier: payload.identifier, vessel: this.vessels.get(mmsi), cities: [], error: { code: "NO_API_KEY" } });
+			this.sendSocketNotification("VESSELTRACKER_UPDATE", { identifier: payload.identifier, vessel: this.vessels.get(mmsi), cities: [], error: { code: "NO_API_KEY" }, mapApiKey: this.instances.get(payload.identifier).mapApiKey });
 			return;
 		}
 		const keyWasMissing = !this.apiKey;
@@ -152,7 +164,8 @@ module.exports = NodeHelper.create({
 			identifier,
 			vessel,
 			cities: instance.showNearestCities ? this.citiesFor(vessel, instance) : [],
-			error: this.apiError ? { code: "API_ERROR", message: this.apiError } : null
+			error: this.apiError ? { code: "API_ERROR", message: this.apiError } : null,
+			mapApiKey: instance.mapApiKey
 		});
 	},
 
