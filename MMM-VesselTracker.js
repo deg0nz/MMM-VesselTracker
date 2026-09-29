@@ -136,8 +136,7 @@ Module.register("MMM-VesselTracker", {
 		const stale = this.isStale();
 		const age = this.formatAge(Date.now() - position.time);
 		if (stale) {
-			const duration = this.formatAge(Date.now() - position.time, "DURATION");
-			wrapper.append(this.notice("fa-eye-slash", this.translate("UNAVAILABLE_TITLE"), this.translate("UNAVAILABLE_TEXT", { name, duration })));
+			wrapper.append(this.notice("fa-eye-slash", this.translate("UNAVAILABLE_TITLE"), this.translate("LAST_SIGNAL", { age })));
 		}
 
 		const details = createElement("div", stale ? "vt-details vt-stale" : "vt-details");
@@ -155,8 +154,8 @@ Module.register("MMM-VesselTracker", {
 			const status = this.translate(`NAV_STATUS_${position.navStatus}`);
 			if (position.navStatus !== null && status !== `NAV_STATUS_${position.navStatus}`) meta.push(status);
 		}
-		meta.push(this.translate(stale ? "LAST_SEEN" : "UPDATED", { age }));
-		details.append(createElement("div", "vt-meta xsmall dimmed", meta.join(" · ")));
+		if (!stale) meta.push(this.translate("UPDATED", { age }));
+		if (meta.length > 0) details.append(createElement("div", "vt-meta xsmall dimmed", meta.join(" · ")));
 
 		const waterBody = this.vessel.waterBody;
 		if (this.config.showWaterBody && waterBody?.name) {
@@ -211,10 +210,9 @@ Module.register("MMM-VesselTracker", {
 			: { color: "#fff", fillColor: "#4fc3f7", fillOpacity: 1 });
 	},
 
-	// "AGE" gives "3 h ago", "DURATION" gives "3 h" (for "quiet for 3 h").
-	formatAge (ms, prefix = "AGE") {
+	formatAge (ms) {
 		const { key, count } = VesselTrackerFormat.ageParts(ms);
-		return this.translate(key.replace("AGE_", `${prefix}_`), { count });
+		return this.translate(key, { count });
 	},
 
 	notice (icon, title, text, extraClass = "") {
